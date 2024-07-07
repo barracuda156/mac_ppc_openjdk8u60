@@ -15,17 +15,17 @@ sudo ulimit -n 512
 #
 
 # set location of your bootstrap jdk (download from https://wiki.openjdk.java.net/display/BSDPort/Darwin9Build)
-bootstrap_jdk=/Users/nils/Devel/jdk/openjdk7-zerovm-ppc-jyeary-2012-02-16-07-18-b00
+bootstrap_jdk=/Library/Java/JavaVirtualMachines/openjdk7-bootstrap
 #
 
-bash configure --prefix=$HOME/java8 --with-num-cores=1  --disable-headful --enable-option-checking=fatal --with-boot-jdk=$bootstrap_jdk --with-jvm-variants=zero CC=gcc-4.2 CXX=g++-4.2
+bash configure --prefix=$HOME/java8 --with-num-cores=1 --disable-headful --with-boot-jdk=$bootstrap_jdk --with-jvm-variants=zero CC=gcc-4.2 CXX=g++-4.2
 
 # don't know how to get the dtrace stuff working hence we disable it in the make (and hacks in makefiles)
-make HOTSPOT_DISABLE_DTRACE_PROBES=true LOG=debug 
+make HOTSPOT_DISABLE_DTRACE_PROBES=true LOG=debug ENABLE_FULL_DEBUG_SYMBOLS=0
 
 
 #hmm copy extra libraries......
-cp /usr/X11/lib/libfontconfig.1.dylib build/macosx-ppc-normal-zero-release/jdk/lib/
+ln -s /opt/local/lib/libfontconfig.1.dylib build/macosx-ppc-normal-zero-release/jdk/lib/
 
 
 

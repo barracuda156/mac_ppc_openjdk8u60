@@ -49,10 +49,10 @@ ifeq ($(SPEC),)
   # Prefer llvm-gcc where available.
   ifeq ($(OS_VENDOR), Darwin)
     ifeq ($(origin CXX), default)
-      CXX = llvm-g++
+      CXX = g++
     endif
     ifeq ($(origin CC), default)
-      CC  = llvm-gcc
+      CC  = gcc
     endif
 
     ifeq ($(ARCH), i486)
@@ -247,7 +247,7 @@ endif
 
 # Compiler warnings are treated as errors
 ifneq ($(COMPILER_WARNINGS_FATAL),false)
-  WARNINGS_ARE_ERRORS = -Werror
+  WARNING_FLAGS =
 endif
 
 ifeq ($(USE_CLANG), true)
@@ -344,7 +344,7 @@ ifeq ($(OS_VENDOR), Darwin)
   # if built on a newer version of the OS.
   # The expected format is X.Y.Z
   ifeq ($(MACOSX_VERSION_MIN),)
-    MACOSX_VERSION_MIN=10.7.0
+    MACOSX_VERSION_MIN=10.5.0
   endif
   # The macro takes the version with no dots, ex: 1070
   CFLAGS += -DMAC_OS_X_VERSION_MAX_ALLOWED=$(subst .,,$(MACOSX_VERSION_MIN)) \

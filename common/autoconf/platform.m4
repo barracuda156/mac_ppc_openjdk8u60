@@ -242,6 +242,8 @@ AC_DEFUN([PLATFORM_SETUP_TARGET_CPU_BITS],
         OPENJDK_TARGET_CPU=x86
       elif test "x$OPENJDK_TARGET_CPU_ARCH" = "xsparc"; then
         OPENJDK_TARGET_CPU=sparc
+      elif test "x$OPENJDK_TARGET_CPU_ARCH" = "xppc"; then
+        OPENJDK_TARGET_CPU=ppc
       else
         AC_MSG_ERROR([Reduced build (--with-target-bits=32) is only supported on x86_64 and sparcv9])
       fi
@@ -356,7 +358,7 @@ AC_DEFUN([PLATFORM_SETUP_LEGACY_VARS],
     # -D_LP64=1 is only set on linux and mac. Setting on windows causes diff in
     # unpack200.exe
     if test "x$OPENJDK_TARGET_OS" = xlinux || test "x$OPENJDK_TARGET_OS" = xmacosx; then
-      ADD_LP64="-D_LP64=1"
+      ADD_LP64="-D_LP64=0"
     fi
   fi
   AC_SUBST(LP64,$A_LP64)
@@ -402,7 +404,7 @@ AC_DEFUN([PLATFORM_SET_RELEASE_FILE_OS_VALUES],
   fi
   if test "x$OPENJDK_TARGET_OS" = "xmacosx"; then
     REQUIRED_OS_NAME=Darwin
-    REQUIRED_OS_VERSION=11.2
+    REQUIRED_OS_VERSION=10.6
   fi
 
   AC_SUBST(REQUIRED_OS_NAME)
