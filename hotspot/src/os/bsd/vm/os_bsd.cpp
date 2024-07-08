@@ -169,13 +169,22 @@ julong os::available_memory() {
 // available here means free
 julong os::Bsd::available_memory() {
   uint64_t available = physical_memory() >> 2;
-#ifdef __APPLE__SKIP
+#ifdef __APPLE__
+#if defined __ppc__ || defined __i386__
+  mach_msg_type_number_t count = HOST_VM_INFO_COUNT;
+  vm_statistics_data_t vmstat;
+  kern_return_t kerr = host_statistics(mach_host_self(), HOST_VM_INFO,
+                                         (host_info_t)&vmstat, &count);
+  assert(kerr == KERN_SUCCESS,
+         "host_statistics failed - check mach_host_self() and count");
+#else // 64-bit
   mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
   vm_statistics64_data_t vmstat;
   kern_return_t kerr = host_statistics64(mach_host_self(), HOST_VM_INFO64,
                                          (host_info64_t)&vmstat, &count);
   assert(kerr == KERN_SUCCESS,
          "host_statistics64 failed - check mach_host_self() and count");
+#endif
   if (kerr == KERN_SUCCESS) {
     available = vmstat.free_count * os::vm_page_size();
   }
@@ -726,7 +735,7 @@ static void *java_start(Thread *thread) {
   // initialize floating point control register
   os::Bsd::init_thread_fpu_state();
 
-#ifdef __APPLE__
+#ifdef __APPLE__SKIP
   // register thread with objc gc
   if (objc_registerThreadWithCollectorFunction != NULL) {
     objc_registerThreadWithCollectorFunction();
@@ -3744,7 +3753,7 @@ jint os::init_2(void)
   // initialize thread priority policy
   prio_init();
 
-#ifdef __APPLE__
+#ifdef __APPLE__SKIP
   // dynamically link to objective c gc registration
   void *handleLibObjc = dlopen(OBJC_LIB, RTLD_LAZY);
   if (handleLibObjc != NULL) {
